@@ -1,7 +1,7 @@
 terraform {
   cloud {
-    organization = "SoakDigital"
 
+    organization = "SoakDigital"
     workspaces {
       name = "sandbox-env"
     }
@@ -10,9 +10,9 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 4.16"
+      version = ">= 5.9.0"
     }
   }
 
-  required_version = ">= 1.2.0"
+  required_version = ">= 1.5.0"
 }
