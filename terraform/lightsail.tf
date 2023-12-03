@@ -1,23 +1,44 @@
-resource "awslightsail_container_service" "test" {
+resource "aws_lightsail_container_service" "my_container_service" {
   name        = "container-service-1"
   power       = "nano"
   scale       = 1
   is_disabled = false
-  availablility_zone = "eu-west-2a"
+
+  tags = {
+    foo1 = "bar1"
+    foo2 = ""
+  }
 }
 
-resource "awslightsail_container_deployment" "test" {
-  container_service_name = awslightsail_container_service.test.id
+resource "aws_lightsail_container_service_deployment_version" "example" {
   container {
-    container_name = "test1"
+    container_name = "hello-world"
     image          = "amazon/amazon-lightsail:hello-world"
-    port {
-      port_number = 80
-      protocol    = "HTTP"
+
+    command = []
+
+    environment = {
+      MY_ENVIRONMENT_VARIABLE = "my_value"
+    }
+
+    ports = {
+      80 = "HTTP"
     }
   }
+
   public_endpoint {
-    container_name = "test1"
+    container_name = "hello-world"
     container_port = 80
+
+    health_check {
+      healthy_threshold   = 2
+      unhealthy_threshold = 2
+      timeout_seconds     = 2
+      interval_seconds    = 5
+      path                = "/"
+      success_codes       = "200-499"
+    }
   }
+
+  service_name = aws_lightsail_container_service.my_container_service.name
 }
